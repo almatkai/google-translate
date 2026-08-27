@@ -1,6 +1,8 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "translate",
+  "id": "com.tezbar.google-translate",
+  "version": "0.1.0",
   "title": "Google Translate",
   "description": "Simple translation using Google Translate",
   "icon": "google-translate.png",
@@ -33,42 +35,66 @@
       "title": "Translate",
       "subtitle": "Google Translate",
       "description": "Simple translation via Google Translate",
-      "mode": "view"
+      "mode": "view",
+      "platforms": [
+        "macOS",
+        "Windows"
+      ]
     },
     {
       "name": "translate-form",
       "title": "Translate Form",
       "subtitle": "Google Translate",
       "description": "Simple translation via Google Translate",
-      "mode": "view"
+      "mode": "view",
+      "platforms": [
+        "macOS",
+        "Windows"
+      ]
     },
     {
       "name": "quick-translate",
       "title": "Quick Translate",
       "subtitle": "Google Translate",
       "description": "Quickly translate to multiple languages",
-      "mode": "view"
+      "mode": "view",
+      "platforms": [
+        "macOS",
+        "Windows"
+      ]
     },
     {
       "name": "instant-translate-copy",
       "title": "Instant Translate Copy",
       "subtitle": "Google Translate",
       "description": "Instantly translate selected text and copy to clipboard",
-      "mode": "no-view"
+      "mode": "no-view",
+      "platforms": [
+        "macOS",
+        "Windows"
+      ]
     },
     {
       "name": "instant-translate-paste",
       "title": "Instant Translate Paste",
       "subtitle": "Google Translate",
       "description": "Instantly translate selected text and paste to active app",
-      "mode": "no-view"
+      "mode": "no-view",
+      "platforms": [
+        "macOS",
+        "Windows"
+      ]
     },
     {
       "name": "instant-translate-view",
       "title": "Instant Translate View",
       "subtitle": "Google Translate",
       "description": "Instantly translate selected text with HUD display",
-      "mode": "no-view"
+      "mode": "no-view",
+      "platforms": [
+        "macOS",
+        "Windows"
+      ]
     }
   ],
   "preferences": [
@@ -3169,6 +3195,18 @@
     "macOS",
     "Windows"
   ],
+  "tezbar": {
+    "schemaVersion": 1,
+    "platforms": [
+      "windows",
+      "macos"
+    ],
+    "upstream": {
+      "repository": "https://github.com/raycast/extensions",
+      "path": "extensions/google-translate",
+      "commit": "a5090e97075f2e65e331127456797d9561b5e2b0"
+    }
+  },
   "overrides": {
     "axios": "0.31.1"
   }

@@ -6,6 +6,10 @@
 
 This extension provides quick access to Google's Translate service.
 
+## Tezbar platform support
+
+This package is prepared for Tezbar on macOS and Windows. Translation requests use the network and the optional proxy preference is available on both platforms.
+
 ## 🔧 Features
 
 - **Quick Translation**: Translate text quickly and easily.
