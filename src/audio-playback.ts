@@ -13,7 +13,9 @@ Add-Type -AssemblyName PresentationCore
 $player = New-Object System.Windows.Media.MediaPlayer
 $dispatcher = [System.Windows.Threading.Dispatcher]::CurrentDispatcher
 $script:playbackError = $null
+$script:playbackFinished = $false
 $player.add_MediaFailed({ $script:playbackError = $args[1].ErrorException })
+$player.add_MediaEnded({ $script:playbackFinished = $true })
 try {
   $player.Open([Uri]::new('${escapedFilename}', [UriKind]::Absolute))
   $deadline = [DateTime]::UtcNow.AddSeconds(15)
@@ -25,7 +27,7 @@ try {
   }
   $player.Play()
   $deadline = [DateTime]::UtcNow.AddSeconds(120)
-  while ($player.Position -lt $player.NaturalDuration.TimeSpan) {
+  while (-not $script:playbackFinished) {
     $dispatcher.Invoke([Action]{}, [System.Windows.Threading.DispatcherPriority]::Background)
     if ($script:playbackError) { throw $script:playbackError }
     if ([DateTime]::UtcNow -gt $deadline) { throw 'Audio playback timed out' }

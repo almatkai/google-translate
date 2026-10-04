@@ -37,6 +37,8 @@ test("Windows uses an encoded STA MediaPlayer script and safely quotes filenames
   assert.ok(script.includes("音声 $file.mp3"));
   assert.ok(script.includes("System.Windows.Media.MediaPlayer"));
   assert.ok(script.includes("$player.Close()"));
+  assert.ok(script.includes("add_MediaEnded"));
+  assert.ok(script.includes("while (-not $script:playbackFinished)"));
 });
 
 test("unsupported platforms fail explicitly", () => {
