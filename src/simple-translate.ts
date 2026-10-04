@@ -3,8 +3,8 @@ import * as googleTTS from "google-tts-api";
 import * as os from "os";
 import * as path from "path";
 import * as https from "https";
-import * as child_process from "child_process";
-import { existsSync, writeFileSync, unlinkSync } from "fs";
+import { mkdtempSync, writeFileSync, rmSync } from "fs";
+import { playAudioFile } from "./audio-playback";
 import { LanguageCode } from "./languages";
 import { LanguageCodeSet } from "./types";
 import { HttpsProxyAgent } from "https-proxy-agent";
@@ -199,34 +199,30 @@ export async function playTTS(text: string, langTo: string, proxy?: string) {
     agent: agent,
   };
 
-  https.get(audioUrl, requestOptions, (response) => {
-    const chunks: Uint8Array[] = [];
-
-    response.on("data", (chunk) => {
-      chunks.push(chunk);
+  const audioData = await new Promise<Buffer>((resolve, reject) => {
+    const request = https.get(audioUrl, requestOptions, (response) => {
+      if (response.statusCode !== 200) {
+        response.resume();
+        reject(new Error(`TTS download failed: HTTP ${response.statusCode}`));
+        return;
+      }
+      const chunks: Uint8Array[] = [];
+      response.on("data", (chunk) => chunks.push(chunk));
+      response.once("end", () => resolve(Buffer.concat(chunks)));
+      response.once("error", reject);
+      response.once("aborted", () => reject(new Error("TTS download was interrupted")));
     });
-
-    response
-      .on("end", () => {
-        const audioData = Buffer.concat(chunks);
-
-        const tempFilePath = path.join(os.tmpdir(), "translation.mp3");
-        writeFileSync(tempFilePath, audioData);
-
-        // Play the audio file using afplay
-        const afplayProcess = child_process.spawn("afplay", [tempFilePath]);
-
-        afplayProcess.on("exit", (code) => {
-          if (code !== 0) {
-            console.error(`Error playing audio: afplay exited with code ${code}`);
-          }
-          if (existsSync(tempFilePath)) {
-            unlinkSync(tempFilePath);
-          }
-        });
-      })
-      .on("error", (error) => {
-        console.error("Error downloading audio:", error);
-      });
+    request.once("error", reject);
+    request.setTimeout(15_000, () => request.destroy(new Error("TTS download timed out")));
   });
+
+  // Concurrent playback must not overwrite or delete another request's MP3.
+  const tempDirectory = mkdtempSync(path.join(os.tmpdir(), "tezbar-tts-"));
+  const tempFilePath = path.join(tempDirectory, "translation.mp3");
+  try {
+    writeFileSync(tempFilePath, audioData);
+    await playAudioFile(tempFilePath);
+  } finally {
+    rmSync(tempDirectory, { recursive: true, force: true });
+  }
 }
