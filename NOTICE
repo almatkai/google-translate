@@ -1,0 +1,5 @@
+Google Translate Rust process port for Tezbar.
+Original extension: gebeto and contributors, MIT (see LICENSE).
+Original TypeScript sources are retained under src/ as a behavior oracle.
+Google Translate is a third-party online service; availability is not guaranteed.
+Rust dependency notices: licenses/THIRD_PARTY.md.
